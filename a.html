@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinSecure - Interactive Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for the dialog/modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 90%;
+            max-width: 450px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal-backdrop.active .modal-content {
+            transform: scale(1);
+        }
+        /* Styles for overhead permission popups */
+        .modal-top {
+           align-items: flex-start;
+           padding-top: 1.5rem;
+        }
+        .permission-content {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            width: 90%;
+            max-width: 400px;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease-out;
+        }
+        .modal-backdrop.active .permission-content {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Main Container -->
+    <div id="app-container" class="min-h-screen p-4 sm:p-6 md:p-8">
+
+        <!-- Home Page View -->
+        <main id="home-page" class="max-w-4xl mx-auto text-center">
+            <header class="my-8">
+                <h1 class="text-4xl sm:text-5xl font-bold text-blue-600">FinSecure</h1>
+                <p class="mt-4 text-lg text-gray-600">A New Era of Secure Banking & Fair Credit Scoring</p>
+            </header>
+
+            <div class="grid md:grid-cols-2 gap-8 mt-12">
+                <!-- Card for Mobile Banking Simulation -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 text-left">
+                    <h2 class="text-2xl font-bold mb-4">Secure Mobile Banking Login</h2>
+                    <p class="text-gray-600 mb-6">Experience our multi-layered security protocol. This interactive demo simulates the login process and a one-time registration flow.</p>
+                    <button id="start-banking-sim" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-all shadow-md">
+                        Login or Register
+                    </button>
+                </div>
+
+                <!-- Card for Credit Scoring USP -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 text-left">
+                    <h2 class="text-2xl font-bold mb-4">Alternative Credit Scoring</h2>
+                    <p class="text-gray-600 mb-6">Discover our unique selling proposition. Learn how we generate real-time, explainable credit scores for those underserved by traditional systems like CIBIL.</p>
+                    <a href="afterlogin.html#usp-page" class="w-full block text-center bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-900 transition-all shadow-md">
+                        Explore Our Credit Scoring USP
+                    </a>
+                </div>
+            </div>
+             <footer class="mt-16 text-center text-gray-500">
+                <p>&copy; 2025 FinSecure. A conceptual prototype.</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Modals for Banking Simulation -->
+    <div id="modal-container">
+        <!-- Step 1: Credentials -->
+        <div id="modal-credentials" class="modal-backdrop">
+            <div class="modal-content">
+                <h3 class="text-xl font-bold mb-4">Mobile Banking Login</h3>
+                <p class="text-gray-600 mb-6">Please enter your credentials to continue.</p>
+                <div class="space-y-4">
+                    <input id="user-id-input" type="text" placeholder="Customer ID / User ID" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                    <input id="password-input" type="password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                </div>
+                <p id="error-message" class="text-red-500 text-sm mt-2 h-4"></p>
+                <button id="login-btn" class="mt-4 w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">Login</button>
+                <p class="text-center mt-4 text-sm">New user? <button id="start-registration" class="font-semibold text-blue-600 hover:underline">Register Now</button></p>
+            </div>
+        </div>
+
+        <!-- Registration Modals -->
+        <div id="modal-register-card" class="modal-backdrop">
+            <div class="modal-content">
+                <h3 class="text-xl font-bold mb-4">New User Registration (1/2)</h3>
+                <p class="text-gray-600 mb-6">Please enter your Debit Card details to begin.</p>
+                <div class="space-y-4">
+                    <input type="text" placeholder="Debit Card Number" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" placeholder="Expiry Date (MM/YY)" class="w-full p-3 border border-gray-300 rounded-lg">
+                        <input type="password" placeholder="ATM PIN" class="w-full p-3 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+                <button class="next-btn mt-6 w-full bg-blue-600 text-white font-semibold py-3 rounded-lg" data-next="registerSq">Next</button>
+            </div>
+        </div>
+        
+        <div id="modal-register-ib" class="modal-backdrop">
+            <div class="modal-content">
+                <h3 class="text-xl font-bold mb-4">New User Registration (1/2)</h3>
+                <p class="text-gray-600 mb-6">Verify with your Internet Banking credentials.</p>
+                <div class="space-y-4">
+                    <input type="text" placeholder="Internet Banking Username" class="w-full p-3 border border-gray-300 rounded-lg">
+                    <input type="password" placeholder="Internet Banking Password" class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <button class="next-btn mt-6 w-full bg-blue-600 text-white font-semibold py-3 rounded-lg" data-next="registerSq">Next</button>
+            </div>
+        </div>
+        
+        <div id="modal-register-sq" class="modal-backdrop">
+            <div class="modal-content">
+                <h3 class="text-xl font-bold mb-4">New User Registration (2/2)</h3>
+                <p class="text-gray-600 mb-6">Please answer a security question.</p>
+                <div class="space-y-4">
+                    <select class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                        <option>What is your mother's maiden name?</option>
+                        <option>What was the name of your first pet?</option>
+                        <option>In what city were you born?</option>
+                    </select>
+                    <input type="text" placeholder="Your Answer" class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <button id="complete-registration-btn" class="mt-6 w-full bg-blue-600 text-white font-semibold py-3 rounded-lg">Complete Registration</button>
+            </div>
+        </div>
+
+        <!-- Permission Modals (now part of registration) -->
+        <div id="modal-permission-phone" class="modal-backdrop modal-top">
+             <div class="permission-content">
+                <p class="font-semibold mb-2">Allow "FinSecure" to access phone status?</p>
+                <p class="text-sm text-gray-600 mb-4">This is required for SIM binding and to verify your device's identity for security.</p>
+                <div class="flex justify-end space-x-4">
+                    <button class="permission-deny font-semibold text-gray-600 px-4 py-2 rounded-md hover:bg-gray-100">Deny</button>
+                    <button class="permission-allow font-semibold text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50" data-next="location">Allow</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-permission-location" class="modal-backdrop modal-top">
+             <div class="permission-content">
+                <p class="font-semibold mb-2">Allow "FinSecure" to access this device's location?</p>
+                <p class="text-sm text-gray-600 mb-4">Your location is used for security and fraud detection to keep your account safe.</p>
+                <div class="flex justify-end space-x-4">
+                    <button class="permission-deny font-semibold text-gray-600 px-4 py-2 rounded-md hover:bg-gray-100">Deny</button>
+                    <button class="permission-allow font-semibold text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50" data-next="biometrics">Allow</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-permission-biometrics" class="modal-backdrop modal-top">
+             <div class="permission-content">
+                <p class="font-semibold mb-2">Enable Biometric Login?</p>
+                <p class="text-sm text-gray-600 mb-4">Use your Fingerprint or Face ID for faster, more convenient access to your account.</p>
+                <div class="flex justify-end space-x-4">
+                    <button class="permission-final font-semibold text-gray-600 px-4 py-2 rounded-md hover:bg-gray-100">Skip</button>
+                    <button class="permission-final font-semibold text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50">Enable</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Permission Denied Modal -->
+        <div id="modal-permission-denied" class="modal-backdrop">
+             <div class="modal-content text-center">
+                <h3 class="text-xl font-bold mb-2 text-red-600">Permission Required</h3>
+                <p class="text-gray-600 mb-6">This permission is required for security. Registration cannot proceed without it.</p>
+                <button id="permission-denied-ok" class="w-full bg-gray-800 text-white font-semibold py-3 rounded-lg">OK</button>
+            </div>
+        </div>
+
+        <!-- Registration Choice Modal -->
+        <div id="modal-register-choice" class="modal-backdrop">
+            <div class="modal-content">
+                <h3 class="text-xl font-bold mb-4">Choose Registration Method</h3>
+                <p class="text-gray-600 mb-6">Please select how you'd like to verify your account to proceed.</p>
+                <div class="space-y-4">
+                    <button id="choice-debit-card" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">Using Debit Card</button>
+                    <button id="choice-ib" class="w-full bg-gray-200 text-gray-700 font-semibold py-3 rounded-lg hover:bg-gray-300 transition">Using Internet Banking</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const startBankingSimBtn = document.getElementById('start-banking-sim');
+            const startRegistrationBtn = document.getElementById('start-registration');
+            const loginBtn = document.getElementById('login-btn');
+            const permissionDeniedOkBtn = document.getElementById('permission-denied-ok');
+            const completeRegistrationBtn = document.getElementById('complete-registration-btn');
+            const userIdInput = document.getElementById('user-id-input');
+            const passwordInput = document.getElementById('password-input');
+            const errorMessage = document.getElementById('error-message');
+            const choiceDebitCardBtn = document.getElementById('choice-debit-card');
+            const choiceIbBtn = document.getElementById('choice-ib');
+
+            const modals = {
+                credentials: document.getElementById('modal-credentials'),
+                registerCard: document.getElementById('modal-register-card'),
+                registerIb: document.getElementById('modal-register-ib'),
+                registerSq: document.getElementById('modal-register-sq'),
+                phone: document.getElementById('modal-permission-phone'),
+                location: document.getElementById('modal-permission-location'),
+                biometrics: document.getElementById('modal-permission-biometrics'),
+                permissionDenied: document.getElementById('modal-permission-denied'),
+                registerChoice: document.getElementById('modal-register-choice'),
+            };
+
+            let currentModal = null;
+
+            function showModal(modalId) {
+                if (currentModal) currentModal.classList.remove('active');
+                
+                const modalElement = modals[modalId];
+                if (modalElement) {
+                    modalElement.classList.add('active');
+                    currentModal = modalElement;
+                }
+            }
+
+            function hideAllModals() {
+                if (currentModal) {
+                    currentModal.classList.remove('active');
+                    currentModal = null;
+                }
+            }
+
+            startBankingSimBtn.addEventListener('click', () => showModal('credentials'));
+            startRegistrationBtn.addEventListener('click', () => showModal('phone')); 
+
+            modals.credentials.addEventListener('click', (e) => {
+                if (e.target === modals.credentials) hideAllModals();
+            });
+
+            loginBtn.addEventListener('click', () => {
+                const userId = userIdInput.value.trim();
+                const password = passwordInput.value.trim();
+                let isValid = true;
+
+                userIdInput.classList.remove('border-red-500');
+                passwordInput.classList.remove('border-red-500');
+                errorMessage.textContent = '';
+
+                if (userId === '') {
+                    userIdInput.classList.add('border-red-500');
+                    isValid = false;
+                }
+                
+                if (password === '') {
+                    passwordInput.classList.add('border-red-500');
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    errorMessage.textContent = 'Both fields are required.';
+                } else {
+                    window.location.href = 'afterlogin.html';
+                }
+            });
+
+            // Handle Registration and Permission flow
+            document.querySelectorAll('.next-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const nextModalId = button.dataset.next;
+                    showModal(nextModalId);
+                });
+            });
+            
+            document.querySelectorAll('.permission-allow').forEach(button => {
+                button.addEventListener('click', () => {
+                    const nextModalId = button.dataset.next;
+                    showModal(nextModalId);
+                });
+            });
+
+            document.querySelectorAll('.permission-deny').forEach(button => {
+                button.addEventListener('click', () => {
+                    showModal('permissionDenied');
+                });
+            });
+            
+            permissionDeniedOkBtn.addEventListener('click', () => {
+                 hideAllModals();
+                 showModal('credentials');
+            });
+
+            document.querySelectorAll('.permission-final').forEach(button => {
+                button.addEventListener('click', () => {
+                    showModal('registerChoice');
+                });
+            });
+
+            choiceDebitCardBtn.addEventListener('click', () => {
+                showModal('registerCard');
+            });
+
+            choiceIbBtn.addEventListener('click', () => {
+                showModal('registerIb');
+            });
+
+            completeRegistrationBtn.addEventListener('click', () => {
+                // MODIFICATION: Instead of redirecting, just hide the modals.
+                hideAllModals();
+            });
+
+        });
+    </script>
+</body>
+</html>
+

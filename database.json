@@ -1,0 +1,58 @@
+{
+  "userInfo": {
+    "name": "Priya Sharma"
+  },
+  "account": {
+    "balance": 10150.20
+  },
+  "creditScore": {
+    "score": 783,
+    "rating": "Excellent",
+    "factors": [
+      { "description": "Consistent income stream detected.", "positive": true },
+      { "description": "All utility bills paid on time.", "positive": true },
+      { "description": "Healthy savings-to-spending ratio.", "positive": true },
+      { "description": "Low frequency of high-risk transactions.", "positive": true },
+      { "description": "Slightly high spending on entertainment.", "positive": false }
+    ]
+  },
+  "transactions": [
+    {
+      "merchant": "Salary Credit",
+      "date": "August 28, 2025",
+      "amount": 20000.00,
+      "type": "credit"
+    },
+    {
+      "merchant": "Zomato",
+      "date": "August 27, 2025",
+      "amount": 450.50,
+      "type": "debit"
+    },
+    {
+      "merchant": "Electricity Bill",
+      "date": "August 26, 2025",
+      "amount": 1250.00,
+      "type": "debit"
+    },
+    {
+      "merchant": "Netflix Subscription",
+      "date": "August 25, 2025",
+      "amount": 649.00,
+      "type": "debit"
+    },
+    {
+      "merchant": "Freelance Payment",
+      "date": "August 24, 2025",
+      "amount": 5500.00,
+      "type": "credit"
+    }
+  ],
+  "spendingByCategory": {
+    "Food & Dining": 4200,
+    "Bills & Utilities": 2500,
+    "Shopping": 1850,
+    "Entertainment": 1200,
+    "Travel": 950
+  }
+}
